@@ -24,7 +24,6 @@ public class AddTwoNumbers {
 //        ListNode L5 = new ListNode(6);
 //        ListNode L6 = new ListNode(4);
 //
-//
 //        L1.next = L2;
 //        L2.next = L3;
 //
