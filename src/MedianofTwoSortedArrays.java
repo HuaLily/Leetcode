@@ -36,10 +36,40 @@ public class MedianofTwoSortedArrays {
     //A[0] A[1] A[2] ... A[i-1] | A[i] A[i+1] ... A[m-1]
     //B[0] B[1] B[2] ... B[j-1] | B[j] B[j+1] ... B[n-1]
 
-    //左边数目 = 右边数目 i + j = m - i + n - j + 1 / m + n - i -j
+    //找到中位数要满足下面两个条件
 
-    //要保证 max(left_part) < min(right_part)
-    //A[i-1] <= B[j] && B[j-1] <= A[i]
+    //1.左边数目 = 右边数目
+    // i + j = m - i + n - j + 1 / m + n - i -j
+    //用 i 来表示 j ，j = (m + n + 1)/2 - i (只考虑奇数的式子，因为这样子，中位数就能落再左半边)
+    //注意，要保证 n >= m,才能保证j不是复数
+
+    //2.要保证 max(left_part) < min(right_part)
+    //用式子表达就是 A[i-1] <= B[j] && B[j-1] <= A[i]
+
+    //目的就是找到A中的i，j就会根据表达式变化
+    //二分查找i，找到满足条件的i：
+    //1.i = (imax + imin)/2，j = (m + n + 1)/2 - i
+    //2.遇到三种情况：
+        //（1）i 正好：A[i-1] <= B[j] && B[j-1] <= A[i]
+        //（2）i 太小：B[j-1] > A[i] ;
+        //（3）i 太大：A[i-1] > B[j] ;
+
+    //当 m + n 为奇数的时候，中位数是max(A[i-1],B[j-1])，为偶数的时候，中位数是(max(A[i-1],B[j-1])+ min(A[i]，B[j]))/2
+
+    //考虑边界的情况 i=0,i=m,j=0,j=n ，对导致 A[i−1],B[j−1],A[i],B[j] 不存在
+    //于是把这些情况分开讨论：
+
+    //1. i是perfect的，不需要再改变:
+    //j = 0 (没有B[j-1])/ i = m (没有A[i]) / B[j-1] <= A[i] or
+    //i = 0 (没有A[i-1])/ j = n (没有B[j]) / A[i-1] <= B[j]
+
+    //2. i 太小
+    //j > 0 and i < m ((保证有B[j-1])和A[i]) and B[j - 1] > A[i]
+    //并且 i < m 的时候，根据式子，j > 0 满足
+
+    //3. i 太大
+    //i > 0 and j < n ((保证有A[i-1])和B[j]) and A[i-1] > B[j]
+    //并且 i > 0 的时候，根据式子，j < n 满足
     private static double findMedianSortedArrays(int[] A, int[] B) {
         int m = A.length;
         int n = B.length;
@@ -90,6 +120,7 @@ public class MedianofTwoSortedArrays {
                 }
                 System.out.println("maxleft="+maxleft);
                 if ((m + n ) % 2 == 1){
+                    //如果 m+n 是奇数
                     return maxleft;
                 }
 
@@ -103,6 +134,7 @@ public class MedianofTwoSortedArrays {
                 }else {
                     minRight = Math.min(B[j],A[i]);
                 }
+                //如果 m+n 是偶数
             return (maxleft+ minRight) / 2.0;
             }
         }
