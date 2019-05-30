@@ -18,16 +18,63 @@
 //所以要判断一下 回文在s的索引和s'的索引是不是相同的
 public class LongestPalindromicSubstring {
     public static void main(String[] args) {
-        String s = "babad";
-        String result = longestPalindrome2(s);
+        String s = "abcdbbfcba";
+        String result = longestPalindrome3(s);
         System.out.println("result="+result);
     }
+
+    //3.动态规划法
+    //p(i,j) = true 表示s(i....j)是回文的
+    //p(i,j) = p(i+1,j-1) and s[i] == s[j]
+    //base cases = p(i,i) = true ,p(i,i+1)=(s[i]==s[i+1])
+    private static String longestPalindrome3(String s) {
+        int n = s.length();
+        boolean[][] p = new boolean[n][n];
+        int maxlenth = 0;
+        int beginIndex = 0;
+
+        for (int i = n; i >= 0  ; i--) {
+            //刚开始这边是从0到n，但是因为更新的时候是p(i,j) = p(i+1,j-1)，往内计算，要先算外围，从n到0计算
+            for (int j = i; j < n ; j++) {
+                //base cases
+                if (i == j ){
+                    p[i][j] = true;
+                }else if (j == i + 1 || j == i + 2) {
+                    p[i][j] = s.charAt(i) == s.charAt(j);
+                }else {
+                    p[i][j] = s.charAt(i) == s.charAt(j) && p[i+1][j-1];
+                }
+                if (p[i][j] && j - i + 1 >= maxlenth){
+                    //j - i + 1 >= maxlenth 必须是 >= ，以便更新不到最开头 eg:babad
+                    maxlenth = j - i + 1;
+                    beginIndex = i;
+                    System.out.println("i = "+ i);
+                     System.out.println("j = "+ j);
+                    System.out.println("maxlength= "+maxlenth);
+                }
+            }
+        }
+       // System.out.println("beginIndex = "+ beginIndex);
+
+        //把二维数组打印出来看看
+        for (int i = 0; i < n ; i++) {
+            for (int j = 0; j < n ; j++) {
+                System.out.print(p[i][j] + " ");
+            }
+            System.out.println();
+        }
+
+
+        return s.substring(beginIndex,beginIndex + maxlenth);
+    }
+
     //2.中心扩展法
     //每个字符为中心，往两边扩展并判断
     //当字符串个数是偶数的时候，中心点是两个重复字符的中间，为奇数的时候，就是中间的那个数
     //看讨论题中，有一种很简单的方法，将两种情况都考虑进去，extend（s,i,i）;extend(s,i,i+1)
     //但是考虑到偶数时，中间是重复的字符（eg:"aa"）,可以把j[j+1,k-1]k(表示回文范围)k++;其他左右扩展
     //同时，可以稍稍改进算法，将i的循环范围改到 s.length()- maxlength/2;
+
     private static String longestPalindrome2(String s) {
         if (s == null || s.equals("") ||s.length() == 1){
             return s;
@@ -97,7 +144,6 @@ public class LongestPalindromicSubstring {
         }else {
             return false;
         }
-
     }
 
     private static String reverse(String s) {
