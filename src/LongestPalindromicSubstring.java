@@ -18,9 +18,65 @@
 //所以要判断一下 回文在s的索引和s'的索引是不是相同的
 public class LongestPalindromicSubstring {
     public static void main(String[] args) {
-        String s = "abcdbbfcba";
-        String result = longestPalindrome3(s);
+        String s = "abccba";
+        String result = longestPalindrome4(s);
         System.out.println("result="+result);
+    }
+
+    //4.Manacher algorithm
+    private static String longestPalindrome4(String s) {
+        //1.对数据进行处理,解决下奇数和偶数的问题，在每个字符间插入”#”，
+        // 并且为了使得扩展的过程中，到边界后自动结束，在两端分别插入 “^” 和 “$”，
+        // 两个不可能在字符串中出现的字符，这样像中心扩展法的时候，
+        // 判断两端字符是否相等，如果到了边界就一定会不相等，从而出了循环。经过处理，字符串的长度永远都是奇数了。
+        int n = s.length();
+        if (n == 0 || n == 1) {
+            return s;
+        }
+        String s1 = "^";
+        for (int i = 0; i < n; i++)
+            s1 += "#" + s.charAt(i);
+        s1 += "#$";
+        System.out.println("s1 = "+ s1);
+
+        int[] p = new int[s1.length()];
+        int c = 0;
+        int r = 0;
+        int i_mirror = 0;
+
+        for (int i = 1; i < s1.length() - 1; i++) {
+            i_mirror = 2 * c - i;
+            if (r > i){
+                p[i] = Math.min(r-i,p[i_mirror]);
+            }else {
+                //i == r
+                p[i] = 0;
+            }
+            //扩展i
+            System.out.println("i = "+i );
+            System.out.println("p[1] ="+p[i]);
+            while (s1.charAt(i - p[i] - 1) == s1.charAt(i+p[i]+1)){
+                p[i] += 1;
+            }
+
+            //更新c和r
+            if (i+ p[i] > r){
+                r = i + p [i];
+                c = i;
+            }
+        }
+        //找出最大的P[i]
+        int maxlength = 0;
+        int centerIndex = 0;
+        for (int i = 0; i < s1.length(); i++) {
+            if (p[i] > maxlength){
+                maxlength = p[i];
+                centerIndex = i;
+            }
+        }
+       int start = (centerIndex - p[centerIndex])/2;
+       return s.substring(start,start + maxlength);
+
     }
 
     //3.动态规划法
@@ -49,12 +105,12 @@ public class LongestPalindromicSubstring {
                     maxlenth = j - i + 1;
                     beginIndex = i;
                     System.out.println("i = "+ i);
-                     System.out.println("j = "+ j);
+                    System.out.println("j = "+ j);
                     System.out.println("maxlength= "+maxlenth);
                 }
             }
         }
-       // System.out.println("beginIndex = "+ beginIndex);
+        // System.out.println("beginIndex = "+ beginIndex);
 
         //把二维数组打印出来看看
         for (int i = 0; i < n ; i++) {
