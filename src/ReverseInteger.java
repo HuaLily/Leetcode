@@ -16,11 +16,13 @@
 //Output: 21
 public class ReverseInteger {
     public static void main(String[] args){
-        int x  = -123;
+        int x = 0;
         int ret;
-        ret = Reverse(x);
+        ret = Reverse2(x);
         System.out.println(ret);
     }
+
+
 
     //看的讨论区，最简单的一个方法
     //If overflow exists, the new result will not equal previous one.
@@ -30,6 +32,7 @@ public class ReverseInteger {
         while (x != 0){
             int tail = x % 10;
             int newret = ret * 10 + tail;
+            //巧妙的地方
             if ((newret - tail)/10 != ret){
                 return 0;
             }
@@ -39,5 +42,35 @@ public class ReverseInteger {
 
         return ret;
     }
+
+    //official solution
+    //Pop and Push Digits & Check before Overflow
+    ////pop operation:
+    //pop = x % 10;
+    //x /= 10;
+    //
+    ////push operation:
+    //temp = rev * 10 + pop;
+    //rev = temp;
+
+    private static int Reverse2(int x) {
+        int rev = 0;
+        while (x != 0){
+            int pop = x % 10;
+            x /= 10;
+            if (rev > Integer.MAX_VALUE /10 || (rev == Integer.MAX_VALUE / 10 && pop > 7)){
+                return 0;
+            }
+            if (rev < Integer.MIN_VALUE /10 || (rev == Integer.MIN_VALUE / 10 && pop < -8)){
+                return 0;
+
+            }
+            rev = rev * 10 + pop;
+        }
+        return rev;
+    }
+
+
+
 
 }
