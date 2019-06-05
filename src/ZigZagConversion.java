@@ -18,6 +18,7 @@
 //P     I
 
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,20 +26,52 @@ public class ZigZagConversion {
     public static void main(String[] args){
        String s = "PAYPALISHIRING";
        int numRows = 4;
-       String ret = convert1(s,numRows);
+       String ret = convert2(s,numRows);
        System.out.println(ret);
     }
 
+
+    private static String convert2(String s, int numRows) {
+        //official approach 2: visit by row
+        //Intuition: Visit the characters in the same order as reading the Zig-Zag pattern line by line.
+        //Algorithm: Visit all characters in row 0 first, then row 1, then row 2, and so on...
+        //For all whole numbers k,(k是自动+1)
+        //Characters in row 0 are located at indexes k(2⋅numRows−2)
+        //Characters in row numRows−1 are located at indexes k(2⋅numRows−2)+numRows−1
+        //Characters in inner row i are located at indexes k(2⋅numRows−2)+i and (k+1)(2⋅numRows−2)−i.
+
+
+
+        if (numRows == 1) return s;
+
+        StringBuilder ret = new StringBuilder();
+        int n = s.length();
+        //两个竖排之间的差是(2* nums - 2)
+        int cyclelen = 2 * numRows - 2;
+
+        for (int i = 0; i < numRows; i++) { //一行一行访问
+            for (int j = 0; j + i < n ; j += cyclelen ) { //当最后的时候，j+i = 1
+                ret.append(s.charAt(j+i));//第一行和最后一行的公式
+                if (i != 0 && i != numRows -1 && j + cyclelen - i < n){//当中间的行数
+                    ret.append(s.charAt(j + cyclelen - i));
+                }
+            }
+        }
+
+
+
+        return ret.toString();
+    }
+
+    //official approach 1: sort by row
+    //By iterating through the string from left to right, we can easily determine which row in the Zig-Zag pattern that a character belongs to.
+    //
+    //We can use min(numRows,len(s)) lists to represent the non-empty rows of the Zig-Zag Pattern.
+    //Iterate through ss from left to right, appending each character to the appropriate row.
+    // The appropriate row can be tracked using two variables: the current row and the current direction.
+    //The current direction changes only when we moved up to the topmost row or moved down to the bottommost row.
+
     private static String convert1(String s, int numRows) {
-        //official approach 1: sort by row
-        //By iterating through the string from left to right, we can easily determine which row in the Zig-Zag pattern that a character belongs to.
-        //
-        //We can use min(numRows,len(s)) lists to represent the non-empty rows of the Zig-Zag Pattern.
-        //Iterate through ss from left to right, appending each character to the appropriate row.
-
-        // The appropriate row can be tracked using two variables: the current row and the current direction.
-        //The current direction changes only when we moved up to the topmost row or moved down to the bottommost row.
-
         if (numRows == 1) return s;
         List<StringBuilder> rows = new ArrayList<>();//每行都是用StringBuilder创建
         for (int i = 0; i < Math.min(s.length(), numRows); i++) {
