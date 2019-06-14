@@ -63,13 +63,14 @@ public class RegularExpressionMatching {
     //        （3）dp[i][0](i != 0) = false  默认表示
 
     //3.迭代:遍历这个数组：
-    //        (1)If ( p.charAt(j) == s.charAt(i) || p.charAt(j) == '.' ):  dp[i][j] = dp[i-1][j-1];
-    //        (2)If ( p.charAt(j) == '*'):
-    //               1   if p.charAt(j-1) != s.charAt(i) : dp[i][j] = dp[i][j-2]
+    //        (1)If ( p.charAt(j-1) == s.charAt(i-1) || p.charAt(j-1) == '.' ):  dp[i][j] = dp[i-1][j-1];
+    //              i,j表示个数，在charAt()时候要-1
+    //        (2)If ( p.charAt(j-1) == '*'):
+    //               1   if p.charAt(j-2) != s.charAt(i-1) : dp[i][j] = dp[i][j-2]
     //                      in this case, a* only counts as empty
     //                    当*的前一个字符 不 和s中一致，那就把* 当作0
     //                     eg：s = "abc",p ="abd*"
-    //               2   if p.charAt(j-1) == s.charAt(i) or p.charAt(j-1) == '.':  当 *号前一个字符和s一致，或者字符为"."
+    //               2   if p.charAt(j-2) == s.charAt(i-1) or p.charAt(j-2) == '.':  当 *号前一个字符和s一致，或者字符为"."
     //                      dp[i][j] = dp[i-1][j]    //in this case, a* counts as multiple a
     //                   or dp[i][j] = dp[i][j-1]   // in this case, a* counts as single a
     //                   or dp[i][j] = dp[i][j-2]   // in this case, a* counts as empty
