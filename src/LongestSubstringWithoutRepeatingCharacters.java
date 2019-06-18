@@ -108,6 +108,7 @@ public class LongestSubstringWithoutRepeatingCharacters {
 
     //3.滑动窗口的改进，不再是将s[i]一味的删除,i++，而是找到重复的那个j'，直接跳过[i,j'] ，i= j'+1
     //仅仅有值，但是不知道位序，set集合里是乱序，所以使用map
+    //map中的key是Char ,value 是位序
     private static int lengthOfLongestSubstring3(String s) {
         int n = s.length();
         int ans = 0 ;
@@ -123,6 +124,7 @@ public class LongestSubstringWithoutRepeatingCharacters {
        }
 
        //4.假设字符集为ASCII 128,用int数组来代替map
+        //int 数组的key是 128位的ASCII值，value是位序
     private static int lengthOfLongestSubstring4(String s) {
         int n = s.length();
         int ans = 0;
@@ -132,9 +134,6 @@ public class LongestSubstringWithoutRepeatingCharacters {
             ans = Math.max(ans,j - i + 1);
             index[s.charAt(j)] = j + 1;
         }
-
-
-
         return ans;
 
     }
