@@ -28,10 +28,55 @@ public class LongestCommonPrefix {
     }
 
     //官方的第四种解法
-    //
-
+    // Binary search
+    //思路:在第一个字符中，先找到长度最短的那个字符串，最终的结果不会长于这个长度
+    //int low = 0; int high = minlen;
+    //然后把第一个字符串分成两部分，判断在每个字符串中是不是以第一部分开头，不是的丢弃,保证[0,mid）是正确答案
+    //eg: {leets,leetcode,leetc,leeds}
+    //  min = 5 leets 截取 5个字符，low = 0 ,high = 4 mid = 2 分成两个部分 lee 和 ts ，
+    //判断 lee in leetcode / in leetc /in leeds , low = mid + 1= 3 ,high = 4 ,mid = 3
+    //判断 leet in leetcode /leet in leetc/ leet not in leeds ,high = mid - 1 = 2 ,low = 2 ,end
+    //结果是lee
+    //Runtime: 0 ms, faster than 100.00% of Java online submissions for Longest Common Prefix.
+    //Memory Usage: 37.3 MB, less than 99.07% of Java online submissions for Longest Common Prefix.
     private static String LCP4(String[] input) {
-        return null;
+        if (input == null||input.length == 0){
+            return "";
+        }
+        //找到数组中字符串最短长度
+        int minlen = Integer.MAX_VALUE;
+        for ( String str:input){
+            minlen = Math.min(minlen,str.length());
+        }
+
+        int low = 0;
+        int high = minlen;
+        while (low <= high){
+            int mid  = (low + high)/2;
+            if (IsCommonPreix(input,mid)){
+                low = mid + 1;
+            }else {
+                high = mid - 1;
+            }
+        }
+        return input[0].substring(0,(low + high)/2);
+
+    }
+
+    /**
+     * 判断第一个字符串[0,mid) 是不是数组所有的字符串的前缀
+     * @param input 字符串数组
+     * @param mid 位序
+     * @return
+     */
+    private static boolean IsCommonPreix(String[] input, int mid) {
+        String s = input[0].substring(0,mid);
+        for (int i = 1; i < input.length ; i++) {
+            if (!input[i].startsWith(s)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     //官方的第三种解法：
