@@ -16,15 +16,112 @@
 //All given inputs are in lowercase letters a-z.
 
 
-
-import java.time.OffsetDateTime;
-
 public class LongestCommonPrefix {
     public static void main(String[] args) {
-        String[] input = {};
-        String ret = LCP4(input);
+        String[] input = {"flower","flow","flight"};
+        String ret = LCP5(input[0],input);
         System.out.println(ret);
 
+    }
+
+    //官方的第五种解法 利用树的性质
+    //Follow up
+    //创建一个新树，root为头节点
+    //将每个字符串插入树中，找最长前缀的时候，若当前节点的孩子只有一个，并且没有到尾节点，加到结果上面
+    //
+    private static String LCP5(String q , String[] input) {
+        if(input == null || input.length == 0){
+            return "";
+        }
+        if (input.length == 1){
+            return input[0];
+        }
+        Trie trie = new Trie();
+
+        for (int i = 1; i < input.length; i++) { //将字符串插入到树中
+            trie.insert(input[i]);
+        }
+
+        return trie.searchLongestPrefix(q);
+    }
+
+    public static class TrieNode{
+        private TrieNode[] links;  // R links to node children
+
+        private final int R = 26;
+
+        private boolean isEnd;
+
+        private int size; //表示有几条分叉
+
+        //构造函数  创建节点，按照26个字母一排，每个字母又是又26个向下的链接
+        public TrieNode() {
+            links = new TrieNode[R];
+        }
+
+        //将字符放入节点值
+        public void put(char ch, TrieNode node){
+            links[ch - 'a'] = node;
+            size++;
+        }
+
+        public boolean containKey(char ch) {
+            return links[ch - 'a'] != null;
+        }
+
+
+        public TrieNode get(char ch) {
+            return links[ch - 'a'];
+        }
+
+        public void setEnd() {
+            isEnd = true;
+        }
+
+        public int getLinks() {
+            return size;
+        }
+
+        public boolean isEnd(){
+            return isEnd;
+        }
+    }
+
+    public static class Trie{
+        private TrieNode root; //根节点
+        public Trie(){
+            root = new TrieNode();
+        }
+
+        //给树增加一个节点s,从根节点开始加
+        public void insert(String s) {
+            TrieNode node = root;
+            for (int i = 0; i < s.length(); i++) {
+                char currentChar = s.charAt(i); //将字符串分成一个个字符加入
+                if (!node.containKey(currentChar)){ //当字符没有出现过
+                    node.put(currentChar,new TrieNode()); //分出一条新的叉支
+                }
+                node = node.get(currentChar); //将node指针指向下一个节点
+            }//字符串插入树完毕要加个一个end节点
+            node.setEnd();
+
+        }
+
+        public String searchLongestPrefix(String word) {
+            TrieNode node = root;
+            StringBuilder prefix = new StringBuilder();
+            for (int i = 0; i < word.length(); i++) {
+                char curLetter = word.charAt(i);
+                if (node.containKey(curLetter) && (node.getLinks() == 1) && (!node.isEnd())) {
+                    prefix.append(curLetter);
+                    node = node.get(curLetter);
+                }
+                else
+                    return prefix.toString();
+
+            }
+            return prefix.toString();
+        }
     }
 
     //官方的第四种解法
