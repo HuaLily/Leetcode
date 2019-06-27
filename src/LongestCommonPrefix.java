@@ -106,13 +106,14 @@ public class LongestCommonPrefix {
             node.setEnd();
 
         }
-
+        //针对树 找到制定的word匹配的最长前缀
         public String searchLongestPrefix(String word) {
             TrieNode node = root;
             StringBuilder prefix = new StringBuilder();
             for (int i = 0; i < word.length(); i++) {
                 char curLetter = word.charAt(i);
                 if (node.containKey(curLetter) && (node.getLinks() == 1) && (!node.isEnd())) {
+                    //节点没有分叉，且不是最后的尾节点，并且节点包含当前字符
                     prefix.append(curLetter);
                     node = node.get(curLetter);
                 }
