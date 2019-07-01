@@ -2,38 +2,89 @@
 //Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent.
 //A mapping of digit to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 //Example:
 //Input: "23"
 //Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
 public class LetterCombinationsofaPhoneNumber_17 {
+
+    private static List<String> ret = new ArrayList<>();
+    private static Map<String, String> phone = new HashMap<String, String>(){{
+        put("2", "abc");
+        put("3", "def");
+        put("4", "ghi");
+        put("5", "jkl");
+        put("6", "mno");
+        put("7", "pqrs");
+        put("8", "tuv");
+        put("9", "wxyz");
+    }};
+
     public static void main(String[] args) {
-        String digits = "23";
+        String digits = "";
         List<String> ret = letterCombinations(digits);
         System.out.println(ret);
     }
 
+
     //果然我还是太菜，这题想不出来
-    // 第一种解法也就是是官方答案，利用递归
+    // 第一种解法也就是是官方答案，利用回溯法
+    //什么是回溯？
+    //Backtracking is an algorithm for finding all solutions by exploring all potential candidates.
+    // If the solution candidate turns to be not a solution (or at least not the last one),
+    // backtracking algorithm discards it by making some changes on the previous step, i.e. backtracks and then try again.
+    //列出所有可能的解状态空间树，并用约束函数减去不含答案的子树
+    //这题主要还是列出所有的结果
+    //Runtime: 1 ms, faster than 67.32% of Java online submissions for Letter Combinations of a Phone Number.
+    //Memory Usage: 36.1 MB, less than 99.17% of Java online submissions for Letter Combinations of a Phone Number.
     private static List<String> letterCombinations(String digits) {
-        String[] abc = {"a","b","c"};//2
-        String[] def = {"d","e","f"};//3
-        String[] ghi = {"g","h","i"};//4
-        String[] jkl = {"j","k","l"};//5
-        String[] mno = {"m","n","o"};//6
-        String[] pqrs = {"p","q","r","s","t"};//7
-        String[] tuv = {"t","u","v"};//8
-        String[] wxyz = {"w","x","y","z"};//9
+        phone.put("2","abc");
+        phone.put("3", "def");
+        phone.put("4", "ghi");
+        phone.put("5", "jkl");
+        phone.put("6", "mno");
+        phone.put("7", "pqrs");
+        phone.put("8", "tuv");
+        phone.put("9", "wxyz");
 
-        List ret = new ArrayList<String>();
+        if (digits.length() != 0){
+            backtrack("",digits);
+        }
+        return ret;
+    }
 
-        if (digits == null || digits.length() == 0) return ret;
+    //列出所有的情况
+    private static void backtrack(String combination, String next_digits) {
+        // if there is no more digits to check
+        if (next_digits.length() == 0){
+            ret.add(combination);
+        }
+
+        else {  // if there are still digits to check
+            //拿出digits的第一个数字所对应的字母
+
+            // iterate over all letters which map
+            // the next available digit
+            String digit = next_digits.substring(0, 1);
+            String letters = phone.get(digit);
+
+            for (int i = 0; i < letters.length(); i++) {
+                String letter = letters.substring(i, i + 1);
+                // append the current letter to the combination
+                // and proceed to the next digits
+                backtrack(combination + letter, next_digits.substring(1));
+
+            }
+        }
 
 
 
-        return null;
+
+
+
     }
 }
