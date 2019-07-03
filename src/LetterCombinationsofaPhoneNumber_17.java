@@ -22,14 +22,16 @@ public class LetterCombinationsofaPhoneNumber_17 {
     }};
 
     public static void main(String[] args) {
-        String digits = "";
+        String digits = "123";
         List<String> ret = letterCombinations2(digits);
         System.out.println(ret);
     }
 
-    //FIFO queue
+    //FIFO queue 太厉害了，想不到的答案啊
     //关键在于 （1）字符个数对应几个数字
     // （2）移出之前的值，并循环加上对应的字符
+    //Runtime: 0 ms, faster than 100.00% of Java online submissions for Letter Combinations of a Phone Number.
+    //Memory Usage: 35.9 MB, less than 99.17% of Java online submissions for Letter Combinations of a Phone Number.
     private static List<String> letterCombinations2(String digits) {
         LinkedList<String> ans = new LinkedList<String>();
         if(digits.isEmpty()) return ans;
