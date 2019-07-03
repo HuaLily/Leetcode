@@ -2,10 +2,7 @@
 //Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent.
 //A mapping of digit to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 //Example:
 //Input: "23"
@@ -26,8 +23,27 @@ public class LetterCombinationsofaPhoneNumber_17 {
 
     public static void main(String[] args) {
         String digits = "";
-        List<String> ret = letterCombinations(digits);
+        List<String> ret = letterCombinations2(digits);
         System.out.println(ret);
+    }
+
+    //FIFO queue
+    //关键在于 （1）字符个数对应几个数字
+    // （2）移出之前的值，并循环加上对应的字符
+    private static List<String> letterCombinations2(String digits) {
+        LinkedList<String> ans = new LinkedList<String>();
+        if(digits.isEmpty()) return ans;
+        String[] mapping = new String[] {"0", "1", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        ans.add(""); //先在队列中放入头节点
+        for(int i =0; i < digits.length();i++){  //遍历整个数字
+            int x = Character.getNumericValue(digits.charAt(i)); //得到每个数字
+            while(ans.peek().length()==i){     //队列弹出的字符个数和第i相等
+                String t = ans.remove(); //移除头节点
+                for(char s : mapping[x].toCharArray()) //遍历数字对应的map
+                    ans.add(t+s);
+            }
+        }
+        return ans;
     }
 
 
