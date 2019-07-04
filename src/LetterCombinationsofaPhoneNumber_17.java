@@ -22,9 +22,28 @@ public class LetterCombinationsofaPhoneNumber_17 {
     }};
 
     public static void main(String[] args) {
-        String digits = "123";
-        List<String> ret = letterCombinations2(digits);
+        String digits = "23";
+        List<String> ret = letterCombinations3(digits);
         System.out.println(ret);
+    }
+
+
+    //A version without first loop, but same time complexity. Both are single queue BFS solutions.:
+    //Runtime: 0 ms, faster than 100.00% of Java online submissions for Letter Combinations of a Phone Number.
+    //Memory Usage: 36.1 MB, less than 99.15% of Java online submissions for Letter Combinations of a Phone Number.
+    private static List<String> letterCombinations3(String digits) {
+        LinkedList<String> ans = new LinkedList<>();
+        if (digits.length() == 0 ||digits == null) return ans;
+        String[] mapping = new String[]{"0", "1", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        ans.add("");
+        while (ans.peek().length() != digits.length() ){
+            String remove = ans.remove();
+            String map = mapping[digits.charAt(remove.length())- '0']; //char - '0' 可以到char相应的int数字
+            for (char c : map.toCharArray()){
+                ans.add(remove + c);
+            }
+        }
+        return ans;
     }
 
     //FIFO queue 太厉害了，想不到的答案啊
